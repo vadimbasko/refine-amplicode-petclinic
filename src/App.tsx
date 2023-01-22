@@ -37,6 +37,10 @@ function App() {
     getLocale: () => i18n.language,
   };
 
+  function Users() {
+    return <></>;
+  }
+
   return (
     <ColorModeContextProvider>
       <RefineKbarProvider>
@@ -55,6 +59,15 @@ function App() {
           authProvider={authProvider}
           LoginPage={AuthPage}
           i18nProvider={i18nProvider}
+          resources={[
+            {
+              name: "users",
+              list: Users,
+              options: {
+                route: "users",
+              },
+            },
+          ]}
         />
       </RefineKbarProvider>
     </ColorModeContextProvider>
