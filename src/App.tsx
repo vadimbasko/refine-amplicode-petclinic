@@ -5,7 +5,6 @@ import {
   notificationProvider,
   ReadyPage,
   ErrorComponent,
-  AuthPage,
 } from "@pankod/refine-antd";
 import "@pankod/refine-antd/dist/reset.css";
 
@@ -23,6 +22,7 @@ import {
   OffLayoutArea,
 } from "components/layout";
 import { authProvider } from "./authProvider";
+import {Login} from "./pages/Login";
 const API_URL = "https://your-graphql-url/graphql";
 
 const client = new GraphQLClient(API_URL);
@@ -57,7 +57,7 @@ function App() {
           OffLayoutArea={OffLayoutArea}
           routerProvider={routerProvider}
           authProvider={authProvider}
-          LoginPage={AuthPage}
+          LoginPage={Login}
           i18nProvider={i18nProvider}
           resources={[
             {
