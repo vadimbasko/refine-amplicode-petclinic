@@ -8,7 +8,7 @@ import {
 } from "@pankod/refine-antd";
 import "@pankod/refine-antd/dist/reset.css";
 
-import dataProvider, { GraphQLClient } from "@pankod/refine-graphql";
+import { GraphQLClient } from "@pankod/refine-graphql";
 import routerProvider from "@pankod/refine-react-router-v6";
 import { useTranslation } from "react-i18next";
 import { RefineKbarProvider } from "@pankod/refine-kbar";
@@ -23,10 +23,12 @@ import {
 } from "components/layout";
 import { authProvider } from "./authProvider";
 import {Login} from "./pages/Login";
-const API_URL = "https://your-graphql-url/graphql";
+import {OwnerList} from "./pages/OwnerList";
+import graphqlDataProvider from "./providers/graphqlDataProvider";
+const API_URL = "http://localhost:3000/graphql";
 
 const client = new GraphQLClient(API_URL);
-const gqlDataProvider = dataProvider(client);
+const gqlDataProvider = graphqlDataProvider(client as any);
 
 function App() {
   const { t, i18n } = useTranslation();
@@ -36,10 +38,6 @@ function App() {
     changeLocale: (lang: string) => i18n.changeLanguage(lang),
     getLocale: () => i18n.language,
   };
-
-  function Users() {
-    return <></>;
-  }
 
   return (
     <ColorModeContextProvider>
@@ -61,10 +59,10 @@ function App() {
           i18nProvider={i18nProvider}
           resources={[
             {
-              name: "users",
-              list: Users,
+              name: "owners",
+              list: OwnerList,
               options: {
-                route: "users",
+                route: "owners",
               },
             },
           ]}
