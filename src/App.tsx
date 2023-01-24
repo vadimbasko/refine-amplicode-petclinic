@@ -25,6 +25,7 @@ import { authProvider } from "./authProvider";
 import {Login} from "./pages/Login";
 import {OwnerList} from "./pages/OwnerList";
 import graphqlDataProvider from "./providers/graphqlDataProvider";
+import {OwnerCreate} from "./pages/OwnerCreate";
 const API_URL = "http://localhost:3000/graphql";
 
 const client = new GraphQLClient(API_URL);
@@ -61,6 +62,7 @@ function App() {
             {
               name: "owners",
               list: OwnerList,
+              create: OwnerCreate,
               options: {
                 route: "owners",
               },

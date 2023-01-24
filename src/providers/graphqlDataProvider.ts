@@ -1,15 +1,16 @@
 import {
-  CrudFilters,
-  CrudSorting,
+  // CrudFilters,
+  // CrudSorting,
   DataProvider,
-  LogicalFilter,
+  // LogicalFilter,
 } from "@pankod/refine-core";
 import { GraphQLClient } from "graphql-request";
 import * as gql from "gql-query-builder";
 import pluralize from "pluralize";
 import camelCase from "camelcase";
+import {capitalCase} from "change-case";
 
-// export const genereteSort = (sort?: CrudSorting) => {
+// export const generateSort = (sort?: CrudSorting) => {
 //   if (sort && sort.length > 0) {
 //     const sortQuery = sort.map((i) => {
 //       return `${i.field}:${i.order}`;
@@ -61,14 +62,15 @@ const graphqlDataProvider = (client: GraphQLClient): Required<DataProvider> => {
     getList: async ({
                       resource,
                       hasPagination = true,
-                      pagination = { current: 1, pageSize: 10 },
-                      sort,
-                      filters,
+                      // pagination = { current: 1, pageSize: 10 },
+                      // sort,
+                      // filters,
                       metaData,
                     }) => {
       // const { current = 1, pageSize = 10 } = pagination ?? {};
 
-      // const sortBy = genereteSort(sort);
+      // const sortBy = 
+      // generateSort(sort);
       // const filterBy = generateFilter(filters);
 
       // const camelResource = camelCase(resource);
@@ -123,9 +125,12 @@ const graphqlDataProvider = (client: GraphQLClient): Required<DataProvider> => {
       };
     },
 
+    /*
+      example:  mutation { updateOwner(input: { firstName: "Katharina", lastName: "Ko"}) { id }}
+    */
     create: async ({ resource, variables, metaData }) => {
       const singularResource = pluralize.singular(resource);
-      const camelCreateName = camelCase(`create-${singularResource}`);
+      const camelCreateName = `update${capitalCase(singularResource)}`;
 
       const operation = metaData?.operation ?? camelCreateName;
 
@@ -133,17 +138,11 @@ const graphqlDataProvider = (client: GraphQLClient): Required<DataProvider> => {
         operation,
         variables: {
           input: {
-            value: { data: variables },
-            type: `${camelCreateName}Input`,
+            value: variables,
+            type: `${capitalCase(singularResource)}InputDTO`,
           },
         },
-        fields: metaData?.fields ?? [
-          {
-            operation: singularResource,
-            fields: ["id"],
-            variables: {},
-          },
-        ],
+        fields: metaData?.fields ?? ["id"],
       });
       const response = await client.request(query, gqlVariables);
 

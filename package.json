@@ -15,6 +15,7 @@
     "@testing-library/user-event": "^12.8.3",
     "@types/jest": "^26.0.23",
     "axios": "^1.2.3",
+    "change-case": "^4.1.2",
     "graphql": "^15.5.3",
     "graphql-request": "^3.5.0",
     "http-proxy-middleware": "^2.0.6",
