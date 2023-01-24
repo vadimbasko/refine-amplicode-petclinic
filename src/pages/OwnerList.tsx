@@ -5,15 +5,14 @@ import {
   Table, useTable
 } from "@pankod/refine-antd";
 import React from "react";
+import {capitalCase} from "change-case";
 
 export const OwnerList: React.FC<IResourceComponentsProps> = () => {
 
+  const fields = ["firstName", "lastName", "address", "city"];
+
   const metaData: MetaDataQuery = {
-    fields: [
-      "id",
-      "firstName",
-      "lastName",
-    ],
+    fields: [ "id", ...fields],
   };
 
   const {tableProps} = useTable<IOwner,
@@ -24,16 +23,14 @@ export const OwnerList: React.FC<IResourceComponentsProps> = () => {
   return (
     <List headerProps={{extra: <CreateButton/>}}>
       <Table {...tableProps} rowKey="id">
-        <Table.Column
-          key="firstName"
-          dataIndex="firstName"
-          title="First Name"
-        />
-        <Table.Column
-          key="lastName"
-          dataIndex="lastName"
-          title="Last Name"
-        />
+        {fields.map(name => (
+          <Table.Column
+            key={name}
+            dataIndex={name}
+            title={capitalCase(name)}
+          />))
+        }
+
         <Table.Column<IOwner>
           title="Actions"
           dataIndex="actions"

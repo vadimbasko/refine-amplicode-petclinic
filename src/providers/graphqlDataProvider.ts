@@ -185,27 +185,24 @@ const graphqlDataProvider = (client: GraphQLClient): Required<DataProvider> => {
       };
     },
 
+    /*
+      example:  mutation { updateOwner(input: { id: 1, firstName: "Katharina", lastName: "Ko"}) { id }}
+    */
     update: async ({ resource, id, variables, metaData }) => {
       const singularResource = pluralize.singular(resource);
-      const camelUpdateName = camelCase(`update-${singularResource}`);
+      const camelCreateName = `update${capitalCase(singularResource)}`;
 
-      const operation = metaData?.operation ?? camelUpdateName;
+      const operation = metaData?.operation ?? camelCreateName;
 
       const { query, variables: gqlVariables } = gql.mutation({
         operation,
         variables: {
           input: {
-            value: { where: { id }, data: variables },
-            type: `${camelUpdateName}Input`,
+            value: { ...variables, id: id},
+            type: `${capitalCase(singularResource)}InputDTO`,
           },
         },
-        fields: metaData?.fields ?? [
-          {
-            operation: singularResource,
-            fields: ["id"],
-            variables: {},
-          },
-        ],
+        fields: metaData?.fields ?? ["id"],
       });
       const response = await client.request(query, gqlVariables);
 

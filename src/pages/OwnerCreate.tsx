@@ -11,12 +11,12 @@ import {capitalCase} from "change-case";
 
 export const OwnerCreate: React.FC<IResourceComponentsProps> = () => {
   const {formProps, saveButtonProps} = useForm<IOwner>();
-
+  const fields = ["firstName", "lastName", "address", "city"];
   return (
     <Create saveButtonProps={saveButtonProps}>
       <Form {...formProps} layout="vertical">
 
-        {["firstName", "lastName", "address", "city"].map(name =>
+        {fields.map(name =>
           <Form.Item
             label={capitalCase(name)}
             name={name}

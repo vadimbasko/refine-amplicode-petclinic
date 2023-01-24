@@ -1,22 +1,30 @@
 import React from "react";
 import {
-  Create,
+  Edit,
   Form,
   Input,
   useForm
 } from "@pankod/refine-antd";
-import {IResourceComponentsProps} from "@pankod/refine-core";
+import {IResourceComponentsProps, MetaDataQuery} from "@pankod/refine-core";
 import {IOwner} from "../interfaces";
 import {capitalCase} from "change-case";
 
-export const OwnerCreate: React.FC<IResourceComponentsProps> = () => {
-  const {formProps, saveButtonProps} = useForm<IOwner>();
+export const OwnerEdit: React.FC<IResourceComponentsProps> = () => {
+
+  const fields = ["firstName", "lastName", "address", "city"];
+  const metaData: MetaDataQuery = {
+    fields: ["id", ...fields],
+  };
+
+  const {formProps, saveButtonProps} = useForm<IOwner>({
+    metaData
+  });
 
   return (
-    <Create saveButtonProps={saveButtonProps}>
+    <Edit saveButtonProps={saveButtonProps}>
       <Form {...formProps} layout="vertical">
 
-        {["firstName", "lastName", "address", "city"].map(name =>
+        {fields.map(name =>
           <Form.Item
             label={capitalCase(name)}
             name={name}
@@ -25,6 +33,6 @@ export const OwnerCreate: React.FC<IResourceComponentsProps> = () => {
           </Form.Item>
         )}
       </Form>
-    </Create>
+    </Edit>
   );
 };
