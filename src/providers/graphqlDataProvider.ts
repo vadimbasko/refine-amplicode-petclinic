@@ -8,7 +8,7 @@ import { GraphQLClient } from "graphql-request";
 import * as gql from "gql-query-builder";
 import pluralize from "pluralize";
 import camelCase from "camelcase";
-import {capitalCase} from "change-case";
+import {pascalCase} from "change-case";
 
 // export const generateSort = (sort?: CrudSorting) => {
 //   if (sort && sort.length > 0) {
@@ -130,7 +130,7 @@ const graphqlDataProvider = (client: GraphQLClient): Required<DataProvider> => {
     */
     create: async ({ resource, variables, metaData }) => {
       const singularResource = pluralize.singular(resource);
-      const camelCreateName = `update${capitalCase(singularResource)}`;
+      const camelCreateName = `update${pascalCase(singularResource)}`;
 
       const operation = metaData?.operation ?? camelCreateName;
 
@@ -139,7 +139,7 @@ const graphqlDataProvider = (client: GraphQLClient): Required<DataProvider> => {
         variables: {
           input: {
             value: variables,
-            type: `${capitalCase(singularResource)}InputDTO`,
+            type: `${pascalCase(singularResource)}InputDTO`,
           },
         },
         fields: metaData?.fields ?? ["id"],
@@ -190,7 +190,7 @@ const graphqlDataProvider = (client: GraphQLClient): Required<DataProvider> => {
     */
     update: async ({ resource, id, variables, metaData }) => {
       const singularResource = pluralize.singular(resource);
-      const camelCreateName = `update${capitalCase(singularResource)}`;
+      const camelCreateName = `update${pascalCase(singularResource)}`;
 
       const operation = metaData?.operation ?? camelCreateName;
 
@@ -199,7 +199,7 @@ const graphqlDataProvider = (client: GraphQLClient): Required<DataProvider> => {
         variables: {
           input: {
             value: { ...variables, id: id},
-            type: `${capitalCase(singularResource)}InputDTO`,
+            type: `${pascalCase(singularResource)}InputDTO`,
           },
         },
         fields: metaData?.fields ?? ["id"],
@@ -268,31 +268,21 @@ const graphqlDataProvider = (client: GraphQLClient): Required<DataProvider> => {
 
     deleteOne: async ({ resource, id, metaData }) => {
       const singularResource = pluralize.singular(resource);
-      const camelDeleteName = camelCase(`delete-${singularResource}`);
+      const camelDeleteName = `delete${pascalCase(singularResource)}`;
 
       const operation = metaData?.operation ?? camelDeleteName;
 
       const { query, variables } = gql.mutation({
         operation,
         variables: {
-          input: {
-            value: { where: { id } },
-            type: `${camelDeleteName}Input`,
-          },
+          id: { value: id, type: "ID", required: true },
         },
-        fields: metaData?.fields ?? [
-          {
-            operation: singularResource,
-            fields: ["id"],
-            variables: {},
-          },
-        ],
       });
 
-      const response = await client.request(query, variables);
+      await client.request(query, variables);
 
       return {
-        data: response[operation][singularResource],
+        data: {} as any //response[operation][singularResource],
       };
     },
 
