@@ -27,6 +27,9 @@ import {OwnerList} from "./pages/OwnerList";
 import graphqlDataProvider from "./providers/graphqlDataProvider";
 import {OwnerCreate} from "./pages/OwnerCreate";
 import {OwnerEdit} from "./pages/OwnerEdit";
+import {PetEdit} from "./pages/PetEdit";
+import {PetCreate} from "./pages/PetCreate";
+import {PetList} from "./pages/PetList";
 const API_URL = "http://localhost:3000/graphql";
 
 const client = new GraphQLClient(API_URL);
@@ -67,6 +70,15 @@ function App() {
               edit: OwnerEdit,
               options: {
                 route: "owners",
+              },
+            },
+            {
+              name: "pets",
+              list: PetList,
+              create: PetCreate,
+              edit: PetEdit,
+              options: {
+                route: "pets",
               },
             },
           ]}
