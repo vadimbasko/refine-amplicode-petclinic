@@ -1,3 +1,7 @@
+# Backend
+
+Use <https://github.com/Amplicode/amplicode-mvp-petclinic> `master` branch for backend.
+
 # refine-amplicode-petclinic
 
 <div align="center" style="margin: 30px;">
