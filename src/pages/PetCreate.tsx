@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {
   Create,
   Form,
@@ -10,6 +10,7 @@ import {IOwner} from "../interfaces";
 import {capitalCase} from "change-case";
 import {petFields} from "./PetList";
 import {NamePath} from "rc-field-form/es/interface";
+import {ErrorMessages} from "./ErrorMessages";
 
 interface FieldData {
   errors?: string[];
@@ -21,7 +22,16 @@ interface FieldData {
 
 export const PetCreate: React.FC<IResourceComponentsProps> = () => {
 
-  const onMutationError = (error: HttpError, setFields: (fields: FieldData[]) => void) => {
+  const [formErrors, setFormErrors] = useState<string[]>([]);
+
+  const onMutationError = (error: HttpError,
+                           setFields: (fields: FieldData[]) => void,
+                           setFormErrors: (value: (((prevState: string[]) => string[]) | string[])) => void) => {
+
+    petFields.forEach(value => {
+      setFields([{name: value, errors: []}]);
+    });
+    setFormErrors([]);
 
     if (error?.response?.errors?.length && error?.response?.errors?.length > 0) {
       const errors = (error.response.errors as any[]);
@@ -29,9 +39,12 @@ export const PetCreate: React.FC<IResourceComponentsProps> = () => {
       if (errors[0]?.extensions?.path?.length && errors[0]?.extensions?.path?.length > 0) {
         const message = errors[0].message;
         const path = errors[0].extensions.path[0];
-        console.log("error path", path);
-        console.log("error message", message);
-        setFields([{'name': path, errors: [message]}])
+
+        if (path.length > 0) {
+          setFields([{'name': path, errors: [message]}])
+        } else {
+          setFormErrors([message]);
+        }
       }
     }
 
@@ -39,7 +52,7 @@ export const PetCreate: React.FC<IResourceComponentsProps> = () => {
   }
 
   const {formProps, saveButtonProps, form} = useForm<IOwner>({
-    onMutationError: error => onMutationError(error, form.setFields),
+    onMutationError: error => onMutationError(error, form.setFields, setFormErrors),
     errorNotification: false,
   });
 
@@ -55,6 +68,7 @@ export const PetCreate: React.FC<IResourceComponentsProps> = () => {
             <Input/>
           </Form.Item>
         )}
+        <ErrorMessages errorMessages={formErrors} />
       </Form>
     </Create>
   );

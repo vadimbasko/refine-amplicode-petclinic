@@ -7,7 +7,7 @@ import {
 import React from "react";
 import {capitalCase} from "change-case";
 
-export const petFields = ["identificationNumber"];
+export const petFields = ["identificationNumber", "birthDate"];
 
 export const PetList: React.FC<IResourceComponentsProps> = () => {
 
