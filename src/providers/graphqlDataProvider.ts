@@ -9,6 +9,8 @@ import * as gql from "gql-query-builder";
 import pluralize from "pluralize";
 import camelCase from "camelcase";
 import {pascalCase} from "change-case";
+import {getI18n} from "react-i18next";
+import { Headers } from "graphql-request/dist/types.dom";
 
 // export const generateSort = (sort?: CrudSorting) => {
 //   if (sort && sort.length > 0) {
@@ -78,7 +80,7 @@ const graphqlDataProvider = (client: GraphQLClient): Required<DataProvider> => {
       // const operation = metaData?.operation ?? camelResource;
       const operation = `${pluralize.singular(resource)}List`;
 
-      const { query, variables } = gql.query({
+      const {query, variables} = gql.query({
         operation,
         variables: {
           ...metaData?.variables,
@@ -102,16 +104,16 @@ const graphqlDataProvider = (client: GraphQLClient): Required<DataProvider> => {
       };
     },
 
-    getMany: async ({ resource, ids, metaData }) => {
+    getMany: async ({resource, ids, metaData}) => {
       const camelResource = camelCase(resource);
 
       const operation = metaData?.operation ?? camelResource;
 
-      const { query, variables } = gql.query({
+      const {query, variables} = gql.query({
         operation,
         variables: {
           where: {
-            value: { id_in: ids },
+            value: {id_in: ids},
             type: "JSON",
           },
         },
@@ -128,13 +130,17 @@ const graphqlDataProvider = (client: GraphQLClient): Required<DataProvider> => {
     /*
       example:  mutation { updateOwner(input: { firstName: "Katharina", lastName: "Ko"}) { id }}
     */
-    create: async ({ resource, variables, metaData }) => {
+    create: async ({resource, variables, metaData}) => {
+
+      const locale = getI18n().language;
+      console.log("locale", locale);
+
       const singularResource = pluralize.singular(resource);
       const camelCreateName = `update${pascalCase(singularResource)}`;
 
       const operation = metaData?.operation ?? camelCreateName;
 
-      const { query, variables: gqlVariables } = gql.mutation({
+      const {query, variables: gqlVariables} = gql.mutation({
         operation,
         variables: {
           input: {
@@ -144,7 +150,8 @@ const graphqlDataProvider = (client: GraphQLClient): Required<DataProvider> => {
         },
         fields: metaData?.fields ?? ["id"],
       });
-      const response = await client.request(query, gqlVariables);
+      const headers: (Headers | string[][] | Record<string, string>) | undefined = {"accept-language": locale};
+      const response = await client.request(query, gqlVariables, headers);
 
       return {
         data: response[operation][singularResource],
