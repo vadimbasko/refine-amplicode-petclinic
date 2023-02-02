@@ -78,7 +78,7 @@ const graphqlDataProvider = (client: GraphQLClient): Required<DataProvider> => {
       // const camelResource = camelCase(resource);
 
       // const operation = metaData?.operation ?? camelResource;
-      const operation = `${pluralize.singular(resource)}List`;
+      const operation = metaData?.operation ?? `${pluralize.singular(resource)}List`;
 
       const {query, variables} = gql.query({
         operation,
