@@ -141,6 +141,15 @@ export const Sider: typeof DefaultSider = ({ render }) => {
       <>
         {dashboard}
         {items}
+        <Menu.Item
+          key="addon"
+          style={{
+            fontWeight: selectedKey === "/admin" ? "bold" : "normal",
+          }}
+          icon={<UnorderedListOutlined />}
+        >
+          <Link to="/addon">{translate("adddon.title", "Addon")}</Link>
+        </Menu.Item>
         {logout}
       </>
     );

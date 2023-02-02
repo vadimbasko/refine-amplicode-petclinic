@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Refine } from "@pankod/refine-core";
+import {Refine} from "@pankod/refine-core";
 import {
   notificationProvider,
   ReadyPage,
@@ -8,11 +8,11 @@ import {
 } from "@pankod/refine-antd";
 import "@pankod/refine-antd/dist/reset.css";
 
-import { GraphQLClient } from "@pankod/refine-graphql";
+import {GraphQLClient} from "@pankod/refine-graphql";
 import routerProvider from "@pankod/refine-react-router-v6";
-import { useTranslation } from "react-i18next";
-import { RefineKbarProvider } from "@pankod/refine-kbar";
-import { ColorModeContextProvider } from "contexts";
+import {useTranslation} from "react-i18next";
+import {RefineKbarProvider} from "@pankod/refine-kbar";
+import {ColorModeContextProvider} from "contexts";
 import {
   Title,
   Header,
@@ -21,7 +21,7 @@ import {
   Layout,
   OffLayoutArea,
 } from "components/layout";
-import { authProvider } from "./authProvider";
+import {authProvider} from "./authProvider";
 import {Login} from "./pages/Login";
 import {OwnerList} from "./pages/OwnerList";
 import graphqlDataProvider from "./providers/graphqlDataProvider";
@@ -30,13 +30,26 @@ import {OwnerEdit} from "./pages/OwnerEdit";
 import {PetEdit} from "./pages/PetEdit";
 import {PetCreate} from "./pages/PetCreate";
 import {PetList} from "./pages/PetList";
+import {ComponentPreviews, useInitial} from "./dev";
+import {DevSupport} from "@react-buddy/ide-toolbox";
+import {MyAddonPage} from "./addon/MyAddonPage";
+
 const API_URL = "http://localhost:3000/graphql";
 
 const client = new GraphQLClient(API_URL);
 const gqlDataProvider = graphqlDataProvider(client as any);
 
+const {RouterComponent} = routerProvider;
+const CustomRouterComponent = () => (
+  <DevSupport ComponentPreviews={ComponentPreviews}
+              useInitialHook={useInitial}
+  >
+    <RouterComponent/>
+  </DevSupport>
+);
+
 function App() {
-  const { t, i18n } = useTranslation();
+  const {t, i18n} = useTranslation();
 
   const i18nProvider = {
     translate: (key: string, params: object) => t(key, params),
@@ -51,14 +64,24 @@ function App() {
           dataProvider={gqlDataProvider}
           notificationProvider={notificationProvider}
           ReadyPage={ReadyPage}
-          catchAll={<ErrorComponent />}
+          catchAll={<ErrorComponent/>}
           Title={Title}
           Header={Header}
           Sider={Sider}
           Footer={Footer}
           Layout={Layout}
           OffLayoutArea={OffLayoutArea}
-          routerProvider={routerProvider}
+          routerProvider={{
+            ...routerProvider,
+            RouterComponent: CustomRouterComponent,
+            routes: [
+              {
+                element: <MyAddonPage />,
+                path: "/addon",
+                layout: true
+              },
+            ],
+          }}
           authProvider={authProvider}
           LoginPage={Login}
           i18nProvider={i18nProvider}
