@@ -62,6 +62,9 @@ function App() {
           authProvider={authProvider}
           LoginPage={Login}
           i18nProvider={i18nProvider}
+          options={{
+            disableTelemetry: true
+          }}
           resources={[
             {
               name: "owners",
