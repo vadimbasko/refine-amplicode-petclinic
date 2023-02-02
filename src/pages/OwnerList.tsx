@@ -12,17 +12,19 @@ export const OwnerList: React.FC<IResourceComponentsProps> = () => {
   const fields = ["firstName", "lastName", "address", "city"];
 
   const metaData: MetaDataQuery = {
-    fields: [ "id", ...fields],
+    fields: [ {content: ["id", ...fields]} ],
+    operation: "ownerListByNamesFilterOffsetPageSorted",
   };
 
   const {tableProps} = useTable<IOwner,
     HttpError>({
     metaData,
   });
+  const dataSource: readonly IOwner[] | undefined = (tableProps.dataSource as any)?.content;
 
   return (
     <List headerProps={{extra: <CreateButton/>}}>
-      <Table {...tableProps} rowKey="id">
+      <Table rowKey="id" {...tableProps} dataSource={dataSource} >
         {fields.map(name => (
           <Table.Column
             key={name}
